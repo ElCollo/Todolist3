@@ -3,7 +3,6 @@ import './App.css';
 import {TaskType, Todolist} from './Todolist';
 import {v1} from 'uuid';
 
-
 export type FilterValuesType = 'all' | 'completed' | 'active'
 
 export function App() {
@@ -14,6 +13,7 @@ export function App() {
         {id: v1(), title: 'JS', isDone: true},
         {id: v1(), title: 'Redux', isDone: false},
     ])
+
     let [filter, setFilter] = useState<FilterValuesType>('all')
 
     function removeTask(id: string) {
@@ -27,18 +27,27 @@ export function App() {
         setTasks(newTasks)
     }
 
-    function changeFilter(value: FilterValuesType) {
-        setFilter(value)
+    function ChangeStatus(taskId:string, isDone:boolean) {
+        let task = tasks.find(t => t.id === taskId)
+        if (task) {
+            task.isDone = isDone
+        }
+        setTasks([...tasks])
     }
 
 
     let tusksForTodolist = tasks
     if (filter === 'completed') {
-        tusksForTodolist = tasks.filter(t => t.isDone === true)
+        tusksForTodolist = tasks.filter(t => t.isDone)
     }
     if (filter === 'active') {
-        tusksForTodolist = tasks.filter(t => t.isDone === false)
+        tusksForTodolist = tasks.filter(t => t.isDone)
     }
+
+    function changeFilter(value: FilterValuesType) {
+        setFilter(value)
+    }
+
 
     return (
         <div className="App">
@@ -47,6 +56,8 @@ export function App() {
                       removeTusk={removeTask}
                       changeFilter={changeFilter}
                       addTusk={addTusk}
+                      changeTaskStatus={ChangeStatus}
+                      filter={filter}
             />
         </div>)
 }
